@@ -85,6 +85,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	const model = 'gpt-3.5-turbo';
 	const prompt = generatePrompt(req.body as IPromptData);
 
+	if (!process.env.OPENAI_API_KEY) {
+		res.status(500).send('API key not found');
+	}
+
 	const configuration = new Configuration({
 		apiKey: process.env.OPENAI_API_KEY || '',
 	});

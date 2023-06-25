@@ -9,6 +9,7 @@ import {
 	Alert,
 	AlertIcon,
 	Box,
+	useToast,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { Select as MultiSelect } from 'chakra-react-select';
@@ -33,6 +34,7 @@ import {
 
 const MainForm: React.FC = () => {
 	const router = useRouter();
+	const toast = useToast();
 
 	const { setPromptData, setPackingList } = useAppStore((state) => state);
 	const initialValues: IPromptData = {
@@ -54,6 +56,17 @@ const MainForm: React.FC = () => {
 		setPromptData(values);
 
 		const res = await axios.post('/api/generate', values);
+		if (res.status !== 200) {
+			toast({
+				title: 'There was an error',
+				description: 'Please try again',
+				status: 'error',
+				duration: 9000,
+				isClosable: true,
+			});
+			return;
+		}
+
 		setPackingList(res.data);
 
 		// setTimeout(() => {
@@ -179,7 +192,7 @@ const MainForm: React.FC = () => {
 						>
 							Submit
 						</Button>
-						<Alert mt='16px' status="warning" rounded={'base'}>
+						<Alert mt="16px" status="warning" rounded={'base'}>
 							<AlertIcon />
 							Packing lists can take up to a minute to generate, please be
 							patient
