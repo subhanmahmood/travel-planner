@@ -10,14 +10,15 @@ import {
 import axios from 'axios';
 import { Select as MultiSelect } from 'chakra-react-select';
 import { Form, Formik, FormikHelpers } from 'formik';
-import React, { PropsWithChildren, useState } from 'react';
-import { Option } from 'react-select';
+import React from 'react';
+
+import mockResult from './mock-result';
 
 import {
+	Option,
 	getOptionsFromEnum,
 	getStringFromOptions,
 } from '@/helpers/get-options-from-enum';
-import { IPackingListItem } from '@/lib/store/slices/packing-list/packing-list.slice';
 import { IPromptData } from '@/lib/store/slices/prompt-data/prompt-data.slice';
 import { useAppStore } from '@/lib/store/store';
 import {
@@ -27,7 +28,7 @@ import {
 } from '@/pages/api/generate';
 
 const MainForm: React.FC = () => {
-	const { setPromptData, setPackingList} = useAppStore(state => state);
+	const { setPromptData, setPackingList } = useAppStore(state => state);
 	const initialValues: IPromptData = {
 		accommodation: '',
 		activities: '',
@@ -44,7 +45,9 @@ const MainForm: React.FC = () => {
 		// const res = await axios.post('/api/generate', values);
 		// console.log(res.data)
 		formikHelpers.setSubmitting(false);
-
+		setTimeout(() => {
+			setPackingList(mockResult);
+		}, 1000);
 		// setPackingList(res.data);
 	};
 

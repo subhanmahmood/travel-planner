@@ -10,7 +10,7 @@ export interface IPackingListItem {
 }
 
 export interface PackingListSlice {
-	packingList?: IPackingListItem[];
+	packingList: IPackingListItem[];
 	setPackingList: (packingList: IPackingListItem[]) => void;
 	removePackingListItem: (item: IPackingListItem) => void;
 }
@@ -19,7 +19,7 @@ export const createPackingListSlice: StateCreator<PackingListSlice> = (
 	set,
 	get,
 ) => ({
-	packingList: undefined,
+	packingList: [],
 	setPackingList: (packingList) => set({ packingList }),
 	removePackingListItem: (item) =>
 		set({

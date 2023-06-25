@@ -15,7 +15,7 @@ import { useAppStore } from '@/lib/store/store';
 
 
 export default function Home() {
-	const [list, setList] = useState<IPackingListItem[]>([]);
+	const { packingList } = useAppStore(state => state);
 	const promptData = useAppStore(state => state.promptData);
 	console.log(promptData);
 	const [groupedList, setGroupedList] = useState<GroupedArray<IPackingListItem>>(
@@ -23,15 +23,15 @@ export default function Home() {
 	);
 
 	useEffect(() => {
-		if (list.length > 0) {
-			setGroupedList(groupByProperty(list, 'category'));
+		if (packingList.length > 0) {
+			setGroupedList(groupByProperty(packingList, 'category'));
 		}
-	}, [list]);
+	}, [packingList]);
 
 	return (
 		<Container display={'flex'} flexDir={'column'} gap={'16px'}>
 			{!promptData  ? (
-				<MainForm setList={setList} />
+				<MainForm />
 			) : (
 				<>
 					{
