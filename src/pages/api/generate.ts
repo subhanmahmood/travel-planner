@@ -2,6 +2,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Configuration, OpenAIApi } from 'openai';
 
+import { IPromptData } from '@/lib/store/slices/prompt-data/prompt-data.slice';
+
 export enum Accommodation {
 	Hotel,
 	Airbnb,
@@ -51,17 +53,7 @@ export enum ModesOfTransport {
 	Walking = 'Walking',
 }
 
-export type PromptValues = {
-	destination: string,
-	transport?: ModesOfTransport | string,
-	bags: number | undefined,
-	timeOfYear: string,
-	lengthOfStay: string,
-	activities?: Activities | string,
-	accommodation?: Accommodation | string,
-};
-
-const generatePrompt = (values: PromptValues) => {
+const generatePrompt = (values: IPromptData) => {
 	return `You are an expert travel planner. You have extensive knowledge of how to plan and pack for trips in all areas of the world. Your task is to help me generate a packing list based on the following information. 
 	- Plural items should be split out and included as separate items with the exception of clothing items.
 	- For additional items in the Personal Preferences and Habits section, include accessories for each item as well. These should be added in the same category and as separate items
@@ -91,7 +83,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	}
 
 	const model = 'gpt-3.5-turbo';
-	const prompt = generatePrompt(req.body as PromptValues);
+	const prompt = generatePrompt(req.body as IPromptData);
 
 	const configuration = new Configuration({
 		apiKey: process.env.OPENAI_API_KEY || '',
