@@ -6,13 +6,17 @@ import {
 	Button,
 	VStack,
 	Text,
+	Alert,
+	AlertIcon,
+	Box,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { Select as MultiSelect } from 'chakra-react-select';
 import { Form, Formik, FormikHelpers } from 'formik';
+import { useRouter } from 'next/router';
 import React from 'react';
 
-import mockResult from './mock-result';
+// import mockResult from './mock-result';
 
 import {
 	Option,
@@ -28,7 +32,9 @@ import {
 } from '@/pages/api/generate';
 
 const MainForm: React.FC = () => {
-	const { setPromptData, setPackingList } = useAppStore(state => state);
+	const router = useRouter();
+
+	const { setPromptData, setPackingList } = useAppStore((state) => state);
 	const initialValues: IPromptData = {
 		accommodation: '',
 		activities: '',
@@ -39,21 +45,30 @@ const MainForm: React.FC = () => {
 		transport: '',
 	};
 
-	const handleSubmit = async (values: IPromptData, formikHelpers: FormikHelpers<IPromptData>) => {
+	const handleSubmit = async (
+		values: IPromptData,
+		formikHelpers: FormikHelpers<IPromptData>,
+	) => {
 		formikHelpers.setSubmitting(true);
+
 		setPromptData(values);
-		// const res = await axios.post('/api/generate', values);
-		// console.log(res.data)
+
+		const res = await axios.post('/api/generate', values);
+		setPackingList(res.data);
+
+		// setTimeout(() => {
+		// 	setPackingList(mockResult);
+		// }, 1000);
+
 		formikHelpers.setSubmitting(false);
-		setTimeout(() => {
-			setPackingList(mockResult);
-		}, 1000);
-		// setPackingList(res.data);
+		router.push('/list');
 	};
 
 	return (
-		<>
-			<Text mt={'32px'} fontSize='2xl'>Travel Planner</Text>
+		<Box mb={'32px'}>
+			<Text mt={'32px'} fontSize="2xl">
+				Travel Planner
+			</Text>
 			<Formik
 				enableReinitialize
 				initialValues={initialValues}
@@ -80,7 +95,10 @@ const MainForm: React.FC = () => {
 									name="accommodation"
 									options={getOptionsFromEnum(Accommodation)}
 									onChange={(options: readonly Option[]) => {
-										setFieldValue('accommodation', getStringFromOptions(options));
+										setFieldValue(
+											'accommodation',
+											getStringFromOptions(options),
+										);
 									}}
 									isMulti
 								/>
@@ -108,7 +126,9 @@ const MainForm: React.FC = () => {
 									value={values.bags}
 									onChange={handleChange}
 								/>
-								<FormHelperText>How many bags will you be taking?</FormHelperText>
+								<FormHelperText>
+									How many bags will you be taking?
+								</FormHelperText>
 							</FormControl>
 							<FormControl>
 								<FormLabel htmlFor="lengthOfStay">Length of stay</FormLabel>
@@ -119,7 +139,9 @@ const MainForm: React.FC = () => {
 									value={values.lengthOfStay}
 									onChange={handleChange}
 								/>
-								<FormHelperText>How long will you be staying for?</FormHelperText>
+								<FormHelperText>
+									How long will you be staying for?
+								</FormHelperText>
 							</FormControl>
 							<FormControl>
 								<FormLabel htmlFor="timeOfYear">Time of year</FormLabel>
@@ -148,13 +170,24 @@ const MainForm: React.FC = () => {
 								<FormHelperText>How will you be travelling?</FormHelperText>
 							</FormControl>
 						</VStack>
-						<Button mt={'24px'} mb={'32px'} w='full' isLoading={isSubmitting} variant={'solid'} type="submit">
+						<Button
+							mt={'24px'}
+							w="full"
+							isLoading={isSubmitting}
+							variant={'solid'}
+							type="submit"
+						>
 							Submit
 						</Button>
+						<Alert mt='16px' status="warning" rounded={'base'}>
+							<AlertIcon />
+							Packing lists can take up to a minute to generate, please be
+							patient
+						</Alert>
 					</Form>
 				)}
 			</Formik>
-		</>
+		</Box>
 	);
 };
 
