@@ -10,42 +10,38 @@ import {
 	GroupedArray,
 	groupByProperty,
 } from '@/helpers/group-by-property/group-by-property';
+import { IPackingListItem } from '@/lib/store/slices/packing-list/packing-list.slice';
+import { useAppStore } from '@/lib/store/store';
 
-export type ListItemProps = {
-	category: string;
-	name: string;
-	quantity: number;
-	packed: boolean;
-	required: boolean;
-	reason: string;
-};
 
 export default function Home() {
-	const [list, setList] = useState<ListItemProps[]>([]);
-	const [groupedList, setGroupedList] = useState<GroupedArray<ListItemProps>>(
+	const { packingList } = useAppStore(state => state);
+	const promptData = useAppStore(state => state.promptData);
+	console.log(promptData);
+	const [groupedList, setGroupedList] = useState<GroupedArray<IPackingListItem>>(
 		{},
 	);
 
 	useEffect(() => {
-		if (list.length > 0) {
-			setGroupedList(groupByProperty(list, 'category'));
+		if (packingList.length > 0) {
+			setGroupedList(groupByProperty(packingList, 'category'));
 		}
-	}, list);
+	}, [packingList]);
 
 	return (
 		<Container display={'flex'} flexDir={'column'} gap={'16px'}>
-			{!list.length ? (
-				<MainForm setList={setList} />
+			{!promptData  ? (
+				<MainForm />
 			) : (
 				<>
 					{
-						Object.keys(groupedList).map((category) => {
-							return <>
+						Object.keys(groupedList).map((category, i) => {
+							return <div key={i}>
 								<Text fontSize={'24px'} fontWeight={'semibold'}>{category}</Text>
-								{groupedList[category].map((listItem, i) => {
-									return <ListItem key={i} {...listItem} />;
+								{groupedList[category].map((listItem, j) => {
+									return <ListItem key={j} {...listItem} />;
 								})}
-							</>;
+							</div>;
 						})
 					}
 				</>
