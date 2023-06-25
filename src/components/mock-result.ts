@@ -1,6 +1,6 @@
-import { ListItem } from '@/pages';
+import { IPackingListItem } from '@/lib/store/slices/packing-list/packing-list.slice';
 
-const mockResult: ListItem[] = [
+const mockResult: IPackingListItem[] = [
 	{
 		category: 'Clothing',
 		name: 'Shirts',
