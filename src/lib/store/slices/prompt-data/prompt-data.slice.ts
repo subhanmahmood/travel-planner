@@ -5,7 +5,7 @@ import { Accommodation, Activities, ModesOfTransport } from '@/pages/api/generat
 export interface IPromptData {
 	destination: string,
 	transport?: ModesOfTransport | string,
-	bags: number | undefined,
+	bags?: number,
 	timeOfYear: string,
 	lengthOfStay: string,
 	activities?: Activities | string,
@@ -13,11 +13,11 @@ export interface IPromptData {
 }
 
 export interface PromptDataSlice {
-	promptData?: IPromptData,
+	promptData: IPromptData,
 	setPromptData: (promptData: IPromptData) => void;
 }
 
 export const createPromptDataSlice: StateCreator<PromptDataSlice> = (set) => ({
-	promptData: undefined,
+	promptData: { destination: '', timeOfYear: '', lengthOfStay: '' },
 	setPromptData: (promptData) => set({ promptData }),
 });
