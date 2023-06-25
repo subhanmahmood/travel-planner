@@ -9,30 +9,27 @@ import {
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { Select as MultiSelect } from 'chakra-react-select';
-import { Form, Formik } from 'formik';
-import React, { PropsWithChildren, useState } from 'react';
-import { Option } from 'react-select';
+import { Form, Formik, FormikHelpers } from 'formik';
+import React from 'react';
 
-import { ListItemProps } from '../pages/index';
+import mockResult from './mock-result';
 
 import {
+	Option,
 	getOptionsFromEnum,
 	getStringFromOptions,
 } from '@/helpers/get-options-from-enum';
+import { IPromptData } from '@/lib/store/slices/prompt-data/prompt-data.slice';
+import { useAppStore } from '@/lib/store/store';
 import {
 	Accommodation,
 	Activities,
-	PromptValues,
 	ModesOfTransport,
 } from '@/pages/api/generate';
 
-type MainFormProps = PropsWithChildren & {
-	setList: (list: ListItemProps[]) => void;
-};
-
-const MainForm: React.FC<MainFormProps> = ({ setList }) => {
-	const [isLoading, setIsLoading] = useState(false);
-	const initialValues: PromptValues = {
+const MainForm: React.FC = () => {
+	const { setPromptData, setPackingList } = useAppStore(state => state);
+	const initialValues: IPromptData = {
 		accommodation: '',
 		activities: '',
 		bags: undefined,
@@ -42,14 +39,16 @@ const MainForm: React.FC<MainFormProps> = ({ setList }) => {
 		transport: '',
 	};
 
-	const handleSubmit = async (values: PromptValues) => {
-		setIsLoading(true);
-		console.log(values);
-
-		const res = await axios.post('/api/generate', values);
-		// const res = mockResult;
-
-		setList(res.data);
+	const handleSubmit = async (values: IPromptData, formikHelpers: FormikHelpers<IPromptData>) => {
+		formikHelpers.setSubmitting(true);
+		setPromptData(values);
+		// const res = await axios.post('/api/generate', values);
+		// console.log(res.data)
+		formikHelpers.setSubmitting(false);
+		setTimeout(() => {
+			setPackingList(mockResult);
+		}, 1000);
+		// setPackingList(res.data);
 	};
 
 	return (
@@ -60,7 +59,7 @@ const MainForm: React.FC<MainFormProps> = ({ setList }) => {
 				initialValues={initialValues}
 				onSubmit={handleSubmit}
 			>
-				{({ values, handleChange, setFieldValue }) => (
+				{({ values, handleChange, setFieldValue, isSubmitting }) => (
 					<Form>
 						<VStack spacing={'24px'}>
 							<FormControl>
@@ -149,7 +148,7 @@ const MainForm: React.FC<MainFormProps> = ({ setList }) => {
 								<FormHelperText>How will you be travelling?</FormHelperText>
 							</FormControl>
 						</VStack>
-						<Button mt={'24px'} mb={'32px'} w='full' isLoading={isLoading} variant={'solid'} type="submit">
+						<Button mt={'24px'} mb={'32px'} w='full' isLoading={isSubmitting} variant={'solid'} type="submit">
 							Submit
 						</Button>
 					</Form>

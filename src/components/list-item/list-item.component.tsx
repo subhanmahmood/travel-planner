@@ -1,9 +1,9 @@
-import { Checkbox, HStack, Text } from '@chakra-ui/react';
+import { Badge, Checkbox, HStack, Text } from '@chakra-ui/react';
 import React, { useState } from 'react';
 
-import { ListItemProps } from '@/pages';
+import { IPackingListItem } from '@/lib/store/slices/packing-list/packing-list.slice';
 
-const ListItem: React.FC<ListItemProps> = ({
+const ListItem: React.FC<IPackingListItem> = ({
 	category,
 	name,
 	quantity,
@@ -23,7 +23,7 @@ const ListItem: React.FC<ListItemProps> = ({
 			<label htmlFor={`packed-${name}`}>
 				<Text as={isPacked ? 's' : 'p'}>
 					{name}
-					{quantity > 1 && ` x ${quantity}`}
+					{quantity > 1 && <Badge ml={'1'} variant='outline' colorScheme='blackAlpha'>{` x ${quantity}`}</Badge>}
 				</Text>
 			</label>
 		</HStack>

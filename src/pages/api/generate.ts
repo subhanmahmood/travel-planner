@@ -61,10 +61,6 @@ export type PromptValues = {
 	accommodation?: Accommodation | string,
 };
 
-type Override<T1, T2> = Omit<T1, keyof T2> & T2;
-
-export type GenerateListRequest = Override<NextApiRequest, { body: PromptValues }>;
-
 const generatePrompt = (values: PromptValues) => {
 	return `You are an expert travel planner. You have extensive knowledge of how to plan and pack for trips in all areas of the world. Your task is to help me generate a packing list based on the following information. 
 	- Plural items should be split out and included as separate items with the exception of clothing items.

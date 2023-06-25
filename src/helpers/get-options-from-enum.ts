@@ -1,4 +1,7 @@
-import { Option } from 'react-select';
+export type Option = {
+	label: string,
+	value: unknown
+};
 
 export const getOptionsFromEnum = (array: { [s: number]: string }): Option[] => {
 	if (!array) {

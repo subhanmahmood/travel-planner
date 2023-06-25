@@ -1,6 +1,4 @@
-import { Option } from 'react-select';
-
-import { getOptionsFromEnum, getStringFromOptions } from './get-options-from-enum';
+import { Option, getOptionsFromEnum, getStringFromOptions } from './get-options-from-enum';
 
 describe('get options from enum', () => {
 	it('should return [] for an empty input array', () => {
